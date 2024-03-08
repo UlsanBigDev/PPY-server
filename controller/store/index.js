@@ -1,79 +1,42 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const uuid_1 = require("uuid");
+const store_1 = require("../../dao/store");
 const route = express_1.default.Router();
 const list = [];
-// 모든 상점 조회
-route.get("", (req, res) => {
+route.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send({
-        list: list
+        list: yield store_1.storeDAO.getStore()
     });
-});
-// 상점 등록
-route.post("/register", (req, res) => {
-    const { memberID, addr1, addr2, tag } = req.body;
-    if (!memberID || !addr1 || !addr2)
-        return res.status(400).json({ message: "누락된 항목이 존재합니다." });
-    const storeID = (0, uuid_1.v4)();
-    list.push({
-        storeID,
-        memberID,
-        addr1,
-        addr2,
-        tag: tag ? tag : ""
-    });
-    return res.status(201).json({ message: "등록이 정상적으로 완료 되었습니다.", storeID });
-});
-// 모든 조회 Store 조회 api 임시
-route.get("/test-store", (req, res) => {
+}));
+route.get("/hot", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send({
-        list: [
-            {
-                store_id: 1,
-                sort: "?",
-                store_name: "이케아 팝업스토어"
-            },
-            {
-                store_id: 1,
-                sort: "?",
-                store_name: "이케아 팝업스토어"
-            },
-            {
-                store_id: 1,
-                sort: "?",
-                store_name: "이케아 팝업스토어"
-            },
-            {
-                store_id: 1,
-                sort: "?",
-                store_name: "이케아 팝업스토어"
-            },
-            {
-                store_id: 1,
-                sort: "?",
-                store_name: "이케아 팝업스토어"
-            }, {
-                store_id: 1,
-                sort: "?",
-                store_name: "이케아 팝업스토어"
-            },
-        ]
+        list: yield store_1.storeDAO.getHotStore()
     });
-});
-// 상점 하나만 조회
-route.get("/:id", (req, res) => {
-    res.send({ message: "store API 3" });
-});
-// 상점 수정
-route.put("/:id", (req, res) => {
-    res.send({ message: "store API 4" });
-});
-// 상점 비활성화
-route.patch("/:id/deactivate", (req, res) => {
-    res.send({ message: "store API 5" });
-});
+}));
+route.patch("/:store_id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { store_id } = req.params;
+    const { name, manager_id } = req.body;
+    console.log(store_id);
+    const result = yield store_1.storeDAO.patchStore({ name, manager_id, store_id: parseInt(store_id) });
+    res.status(200).send({ message: "성공적 패치", id: result });
+}));
+route.post("/addStore", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { name, manager_id } = req.body;
+    // console.log(name, manager_id)
+    const result = yield store_1.storeDAO.addStore(req.body);
+    res.status(200).send({ message: "성공적 등록", result });
+}));
 exports.default = route;
