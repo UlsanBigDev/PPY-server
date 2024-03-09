@@ -1,7 +1,8 @@
+import { storeDAO } from "../../dao/store"
 import { Store } from "../../model/store"
 
 export default {
-    getList : () : Store[] => {
+    getList : () => {
         // SELECT * FROM Store (임시)
         return [
             {
@@ -21,7 +22,7 @@ export default {
             },
         ]
     },
-    getBestList : () : Store[] => {
+    getBestList : () => {
         // SELECT * FROM Store ORDER BY Heart (임시)
         return [
             {
@@ -40,5 +41,9 @@ export default {
                 storeId : 1
             },
         ]
+    },
+    getStore : async (store_id : number) => {
+        return await storeDAO.getStore(store_id)
     }
+    
 }

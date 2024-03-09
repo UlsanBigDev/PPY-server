@@ -23,7 +23,12 @@ exports.storeDAO = {
     }),
     getBook: () => __awaiter(void 0, void 0, void 0, function* () {
         const [result, field] = yield exports.storeDAO.connection.query("SELECT * FROM store");
-        console.log(result);
+        return result;
+    }),
+    getStore: (store_id) => __awaiter(void 0, void 0, void 0, function* () {
+        const query = `SELECT * FROM store, store_waiting WHERE store.store_id = ${store_id} AND store_waiting.store_id = ${store_id}`;
+        const [result, field] = yield exports.storeDAO.connection.query(query);
+        console.log(query);
         return result;
     })
 };

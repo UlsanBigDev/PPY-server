@@ -21,9 +21,10 @@ route.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         list: yield store_2.storeDAO.getBook()
     });
 }));
-route.get("/best", (req, res) => {
+route.get("/:store_id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { store_id } = req.params;
     res.send({
-        list: store_1.default.getBestList()
+        list: yield store_1.default.getStore(parseInt(store_id))
     });
-});
+}));
 exports.default = route;

@@ -9,9 +9,10 @@ route.get("/", async (req,res) => {
         list : await storeDAO.getBook()
     })
 })
-route.get("/best", (req,res) => {    
+route.get("/:store_id", async (req,res) => {    
+    const { store_id } = req.params
     res.send({
-        list : store.getBestList()
+        list : await store.getStore(parseInt(store_id))
     })
 })
 export default route
